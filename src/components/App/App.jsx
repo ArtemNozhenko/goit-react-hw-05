@@ -20,14 +20,8 @@ function App() {
           path="/movies/:movieId"
           element={<MovieDetailsPage />}
         >
-          <Route
-            path="/movies/:movieId/cast"
-            element={<MovieCast />}
-          />
-          <Route
-            path="/movies/:movieId/review"
-            element={<MovieReviews />}
-          />
+          <Route path="cast" element={<MovieCast />} />
+          <Route path="review" element={<MovieReviews />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
