@@ -1,18 +1,36 @@
-import { useState, useEffect } from "react";
+import {
+  useState,
+  useEffect,
+  Suspense,
+  useRef,
+} from "react";
 import { fetchMovieDetails } from "../movies-api";
-import { useParams } from "react-router-dom";
+import {
+  Link,
+  Outlet,
+  useLocation,
+  useParams,
+} from "react-router-dom";
+import Loader from "../components/Loader/Loader";
 
 export default function MovieDetailsPage() {
   const [movieDetails, setMovieDetails] = useState({});
   const { movieId } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const location = useLocation();
+  const backLinkRef = useRef(location.state ?? "/");
 
   useEffect(() => {
     const getMovieDetails = async () => {
       try {
+        setIsLoading(true);
         const date = await fetchMovieDetails(movieId);
         setMovieDetails(date);
       } catch {
         console.log("error!");
+      } finally {
+        setIsLoading(false);
       }
     };
     getMovieDetails();
@@ -31,7 +49,12 @@ export default function MovieDetailsPage() {
 
   return (
     <div>
-      <button>Go back</button>
+      <p>
+        <b>
+          <Link to={backLinkRef.current}>Go back</Link>
+        </b>
+      </p>
+      {isLoading && <Loader />}
       <div>
         <img
           src={
@@ -56,6 +79,22 @@ export default function MovieDetailsPage() {
               ))}
           </ul>
         </div>
+      </div>
+      <div>
+        <h3>Additional information</h3>
+        <nav>
+          <ul>
+            <li>
+              <Link to={"cast"}>Cast</Link>
+            </li>
+            <li>
+              <Link to={"reviews"}>Reviews</Link>
+            </li>
+          </ul>
+        </nav>
+        <Suspense fallback={<Loader />}>
+          <Outlet />
+        </Suspense>
       </div>
     </div>
   );
