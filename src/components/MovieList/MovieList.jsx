@@ -11,7 +11,7 @@ export default function MovieList({ movies }) {
           <li className={css.item} key={movie.id}>
             <Link
               to={`/movies/${movie.id}`}
-              state={location}
+              state={{ from: location }}
             >
               {movie.title}
             </Link>

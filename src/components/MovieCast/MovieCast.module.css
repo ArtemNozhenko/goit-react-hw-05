@@ -1,0 +1,38 @@
+.container {
+  padding: 16px;
+  justify-content: center;
+}
+
+.list {
+  display: flex;
+  margin-top: 0;
+  margin-bottom: 0;
+  gap: 25px;
+  padding-left: 0;
+  list-style-type: none;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.item {
+  width: 150px;
+  text-align: center;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  object-fit: cover;
+}
+
+.name {
+  font-size: 16px;
+  margin: 10px 0 5px;
+}
+
+.castCharacter {
+  font-size: 14px;
+  color: #555;
+}

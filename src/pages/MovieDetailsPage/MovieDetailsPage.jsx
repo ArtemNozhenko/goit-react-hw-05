@@ -4,31 +4,35 @@ import {
   Suspense,
   useRef,
 } from "react";
-import { fetchMovieDetails } from "../movies-api";
+import { fetchMovieDetails } from "../../movies-api";
 import {
   Link,
   Outlet,
   useLocation,
   useParams,
 } from "react-router-dom";
-import Loader from "../components/Loader/Loader";
+import Loader from "../../components/Loader/Loader";
+import css from "./MovieDetailsPage.module.css";
+import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 
 export default function MovieDetailsPage() {
   const [movieDetails, setMovieDetails] = useState({});
   const { movieId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const location = useLocation();
-  const backLinkRef = useRef(location.state ?? "/");
+  const backLinkRef = useRef(location.state?.from ?? "/");
 
   useEffect(() => {
     const getMovieDetails = async () => {
       try {
         setIsLoading(true);
-        const date = await fetchMovieDetails(movieId);
-        setMovieDetails(date);
+        setIsError(false);
+        const data = await fetchMovieDetails(movieId);
+        setMovieDetails(data);
       } catch {
-        console.log("error!");
+        setIsError(true);
       } finally {
         setIsLoading(false);
       }
@@ -43,19 +47,26 @@ export default function MovieDetailsPage() {
     genres,
     vote_average,
   } = movieDetails;
+
   const defaultImg =
-    "<https://dl-media.viber.com/10/share/2/long/vibes/icon/image/0x0/95e0/5688fdffb84ff8bed4240bcf3ec5ac81ce591d9fa9558a3a968c630eaba195e0.jpg>";
+    "https://dl-media.viber.com/10/share/2/long/vibes/icon/image/0x0/95e0/5688fdffb84ff8bed4240bcf3ec5ac81ce591d9fa9558a3a968c630eaba195e0.jpg";
   const votePercentage = (vote_average * 10).toFixed(1);
 
   return (
-    <div>
+    <div className={css.container}>
       <p>
         <b>
-          <Link to={backLinkRef.current}>Go back</Link>
+          <Link
+            to={backLinkRef.current}
+            className={css.backLink}
+          >
+            Go back
+          </Link>
         </b>
       </p>
       {isLoading && <Loader />}
-      <div>
+      {isError && <ErrorMessage />}
+      <div className={css.movieDetails}>
         <img
           src={
             poster_path
@@ -64,14 +75,19 @@ export default function MovieDetailsPage() {
           }
           width={250}
           alt="poster"
+          className={css.movieImage}
         />
-        <div>
-          <h2>{original_title}</h2>
-          <p>User Score {votePercentage}%</p>
-          <h3>Overview</h3>
+        <div className={css.movieInfo}>
+          <h2 className={css.movieTitle}>
+            {original_title}
+          </h2>
+          <p className={css.userScore}>
+            User Score: {votePercentage}%
+          </p>
+          <h3 className={css.sectionTitle}>Overview</h3>
           <p>{overview}</p>
-          <h3>Genres</h3>
-          <ul>
+          <h3 className={css.sectionTitle}>Genres</h3>
+          <ul className={css.genresList}>
             {genres &&
               genres.length > 0 &&
               genres.map(({ id, name }) => (
@@ -80,15 +96,17 @@ export default function MovieDetailsPage() {
           </ul>
         </div>
       </div>
-      <div>
-        <h3>Additional information</h3>
+      <div className={css.additionalInfo}>
+        <h3 className={css.sectionTitle}>
+          Additional information
+        </h3>
         <nav>
           <ul>
             <li>
-              <Link to={"cast"}>Cast</Link>
+              <Link to="cast">Cast</Link>
             </li>
             <li>
-              <Link to={"reviews"}>Reviews</Link>
+              <Link to="reviews">Reviews</Link>
             </li>
           </ul>
         </nav>

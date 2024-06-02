@@ -10,7 +10,7 @@ export default function MovieReviews() {
     const getMoviesReviews = async () => {
       try {
         const data = await fetchMoviesReviews(movieId);
-        setMoviesReviews(data);
+        setMoviesReviews(data.results);
       } catch {
         console.error("error!");
       }
@@ -18,11 +18,22 @@ export default function MovieReviews() {
     getMoviesReviews();
   }, [movieId]);
 
-  console.log(moviesReviews);
-
   return (
     <>
-      <div></div>
+      <div>
+        <ul>
+          {moviesReviews.length > 0
+            ? moviesReviews.map(
+                ({ author, content, id }) => (
+                  <li key={id}>
+                    <h3>Author: {author}</h3>
+                    <p>{content}</p>
+                  </li>
+                )
+              )
+            : `We don't have any reviews for this movie`}
+        </ul>
+      </div>
     </>
   );
 }
